@@ -45,9 +45,12 @@ Every lab runs out-of-the-box in **Simulator Mode** (zero API cost, instant dete
 
 You can download the pre-packaged Windows x64 application directly from **[GitHub Releases](https://github.com/Ludi117/claude-api-lab/releases/latest)**:
 
-1. Download **`Claude-API-Lab-win32-x64.zip`** from the [Latest Release (`v2.0.0`)](https://github.com/Ludi117/claude-api-lab/releases/latest).
+1. Download **`Claude-API-Lab-win32-x64.zip`** from the [Latest Release](https://github.com/Ludi117/claude-api-lab/releases/latest).
 2. Extract the `.zip` archive to any folder on your PC.
-3. Double-click **`Claude API Explorer.exe`** to launch the desktop workbench immediately (no terminal or server startup needed).
+3. Double-click **`Claude API Explorer.exe`** to launch the desktop workbench (no terminal or server startup needed).
+4. The app starts in **Simulator Mode**. To use **Live API Mode**, click the **API Key** button in the title bar and paste your `sk-ant-...` key. The key is stored encrypted with the OS keychain (DPAPI on Windows), so no `.env` file is needed.
+
+> **Note:** The `.exe` is not code-signed, so Windows SmartScreen may show *"Windows protected your PC"* on first launch. Click **More info → Run anyway**, or right-click the downloaded `.zip` → **Properties** → check **Unblock** before extracting.
 
 ---
 
@@ -84,6 +87,12 @@ Then open `http://localhost:3000` in your browser.
 npm run package:win
 ```
 This packages the standalone application into `dist/Claude API Explorer-win32-x64/Claude API Explorer.exe`.
+
+To create the release archive uploaded to GitHub Releases, zip that folder (PowerShell):
+
+```powershell
+Compress-Archive -Path "dist/Claude API Explorer-win32-x64" -DestinationPath "dist/Claude-API-Lab-win32-x64.zip" -Force
+```
 
 ---
 
@@ -128,4 +137,4 @@ claude-api-lab/
 
 ## 📄 License
 
-MIT
+Apache License 2.0 — see [LICENSE](LICENSE).

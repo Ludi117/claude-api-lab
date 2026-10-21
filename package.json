@@ -1,8 +1,9 @@
 {
   "name": "claude-api-lab",
   "productName": "Claude API Explorer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Interactive desktop learning workbench for the Anthropic Claude API (Messages, SSE Streaming, Tool Use, Adaptive Thinking, Prompt Caching, and MCP)",
+  "license": "Apache-2.0",
   "main": "main.js",
   "scripts": {
     "start": "npm run build:css && electron .",
