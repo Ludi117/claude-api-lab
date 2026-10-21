@@ -1,0 +1,277 @@
+/* Theme CSS Variables: Midnight Slate (Default), Anthropic Warm Clay, and Daylight Paper */
+:root,
+body[data-theme="midnight"] {
+  --bg-main: #0f1117;
+  --bg-panel: #161922;
+  --bg-card: #1d212d;
+  --border-col: #2a3042;
+  --text-main: #f1f5f9;
+  --text-muted: #94a3b8;
+  --json-key-col: #7dd3fc;
+  --json-str-col: #86efac;
+  --json-num-col: #fcd34d;
+  --json-bool-col: #c084fc;
+}
+
+body[data-theme="clay"] {
+  --bg-main: #141210;
+  --bg-panel: #1c1917;
+  --bg-card: #26221e;
+  --border-col: #38322c;
+  --text-main: #fafaf9;
+  --text-muted: #a8a29e;
+  --json-key-col: #fdba74;
+  --json-str-col: #86efac;
+  --json-num-col: #fde047;
+  --json-bool-col: #d8b4fe;
+}
+
+body[data-theme="daylight"] {
+  --bg-main: #f8f7f4;
+  --bg-panel: #efeae2;
+  --bg-card: #e5dfd5;
+  --border-col: #d0c8bc;
+  --text-main: #1c1917;
+  --text-muted: #57534e;
+  --json-key-col: #0369a1;
+  --json-str-col: #15803d;
+  --json-num-col: #b45309;
+  --json-bool-col: #7e22ce;
+}
+
+/* Override Tailwind theme classes dynamically with CSS variables */
+.bg-claude-bg {
+  background-color: var(--bg-main) !important;
+}
+
+.bg-claude-panel {
+  background-color: var(--bg-panel) !important;
+}
+
+.bg-claude-card {
+  background-color: var(--bg-card) !important;
+}
+
+.border-claude-border {
+  border-color: var(--border-col) !important;
+}
+
+body[data-theme="daylight"] .text-white,
+body[data-theme="daylight"] .text-slate-100,
+body[data-theme="daylight"] .text-slate-200 {
+  color: #1c1917 !important;
+}
+
+body[data-theme="daylight"] .text-slate-300,
+body[data-theme="daylight"] .text-slate-400 {
+  color: #44403c !important;
+}
+
+/* Custom Frameless Window Drag Region */
+.titlebar-drag-region {
+  -webkit-app-region: drag;
+}
+
+.titlebar-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Resizable Split Pane Dividers */
+.pane-resizer {
+  width: 5px;
+  cursor: col-resize;
+  background: transparent;
+  transition: background-color 0.15s ease;
+  position: relative;
+  z-index: 15;
+  flex-shrink: 0;
+}
+
+.pane-resizer:hover,
+.pane-resizer.dragging {
+  background: rgba(217, 119, 87, 0.55);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-col);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d97757;
+}
+
+/* Navigation active state */
+.module-nav-btn {
+  border: 1px solid transparent;
+}
+
+.module-nav-btn:hover {
+  background: rgba(217, 119, 87, 0.06);
+}
+
+.module-nav-btn.active {
+  background: rgba(217, 119, 87, 0.15);
+  border-color: rgba(217, 119, 87, 0.45);
+}
+
+/* Inspector tab active state */
+.inspector-tab {
+  color: var(--text-muted);
+}
+
+.inspector-tab:hover {
+  color: var(--text-main);
+}
+
+.inspector-tab.active {
+  background: rgba(217, 119, 87, 0.18);
+  color: #fb923c;
+  border: 1px solid rgba(217, 119, 87, 0.35);
+}
+
+/* JSON syntax highlighting & interactive hover keys */
+.json-key {
+  color: var(--json-key-col);
+}
+
+.json-key-interactive {
+  transition: background-color 0.12s ease, color 0.12s ease;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.json-key-interactive:hover {
+  background-color: rgba(217, 119, 87, 0.25);
+  color: #fdba74;
+}
+
+.json-string {
+  color: var(--json-str-col);
+}
+
+.json-number {
+  color: var(--json-num-col);
+}
+
+.json-boolean {
+  color: var(--json-bool-col);
+}
+
+/* SSE Event pill animations */
+@keyframes slideInFade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sse-frame-item {
+  animation: slideInFade 0.15s ease-out forwards;
+}
+
+/* Readability: lift the smallest text sizes used across the labs to a 12px minimum */
+.text-\[10px\],
+.text-\[11px\] {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Visible keyboard focus for every interactive element */
+:focus-visible {
+  outline: 2px solid #d97757;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Toast notifications */
+.toast {
+  animation: slideInFade 0.18s ease-out forwards;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.toast-leave {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+/* Rendered Markdown in assistant responses */
+.md-body > * + * {
+  margin-top: 0.6em;
+}
+.md-body h1,
+.md-body h2,
+.md-body h3 {
+  font-weight: 600;
+  color: var(--text-main);
+}
+.md-body h1 { font-size: 1.15em; }
+.md-body h2 { font-size: 1.08em; }
+.md-body h3 { font-size: 1em; }
+.md-body ul { list-style: disc; padding-left: 1.3em; }
+.md-body ol { list-style: decimal; padding-left: 1.3em; }
+.md-body li + li { margin-top: 0.2em; }
+.md-body a { color: #38bdf8; text-decoration: underline; }
+.md-body blockquote {
+  border-left: 3px solid var(--border-col);
+  padding-left: 0.75em;
+  color: var(--text-muted);
+}
+.md-body :not(pre) > code {
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 0.92em;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: var(--bg-card);
+}
+.md-body pre {
+  position: relative;
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 0.92em;
+  padding: 0.75em;
+  border-radius: 8px;
+  background: var(--bg-main);
+  border: 1px solid var(--border-col);
+  overflow-x: auto;
+  white-space: pre;
+}
+.md-body .md-copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-col);
+  background: var(--bg-card);
+  color: var(--text-muted);
+}
+.md-body .md-copy-btn:hover {
+  color: var(--text-main);
+}
+
+/* Titlebar: keep its compact original sizes and never wrap labels */
+header .text-\[10px\] {
+  font-size: 10px;
+}
+header .text-\[11px\] {
+  font-size: 11px;
+}
+header button,
+header h1 {
+  white-space: nowrap;
+}

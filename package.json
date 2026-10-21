@@ -1,0 +1,23 @@
+{
+  "name": "claude-api-lab",
+  "productName": "Claude API Explorer",
+  "version": "1.0.0",
+  "description": "Interactive desktop learning workbench for the Anthropic Claude API (Messages, SSE Streaming, Tool Use, Adaptive Thinking, Prompt Caching, and MCP)",
+  "main": "main.js",
+  "scripts": {
+    "start": "npm run build:css && electron .",
+    "web": "npm run build:css && node server.js",
+    "build:css": "tailwindcss -c tailwind.config.js -i styles/tailwind.input.css -o public/tailwind.css --minify",
+    "package:win": "npm run build:css && npx @electron/packager . \"Claude API Explorer\" --platform=win32 --arch=x64 --out=dist --overwrite --ignore=\"^/styles\" --ignore=\"^/\\.claude\" --ignore=\"^/tailwind\\.config\\.js$\""
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@electron/packager": "^18.3.6",
+    "electron": "^35.0.0",
+    "tailwindcss": "^3.4.17"
+  }
+}

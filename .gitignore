@@ -1,0 +1,13 @@
+# Dependencies & Build Outputs
+node_modules/
+dist/
+
+# Environment & Secrets
+.env
+.env.local
+
+# Local OS / Editor / Shortcut files
+.DS_Store
+Thumbs.db
+*.lnk
+.claude/

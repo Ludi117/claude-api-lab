@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude API Explorer & Learning Workbench v2.0</title>
+  <link rel="stylesheet" href="/tailwind.css" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body data-theme="midnight" class="bg-claude-bg text-slate-100 font-sans h-screen flex flex-col overflow-hidden select-none">
+
+  <!-- TOP FRAMELESS DESKTOP TITLEBAR & GLOBAL TOOLBAR -->
+  <header class="h-13 bg-claude-panel border-b border-claude-border pl-3 pr-1 py-1.5 flex items-center justify-between shrink-0 z-30 titlebar-drag-region">
+    <!-- Left: App Logo, Title & Sidebar Collapse Toggle -->
+    <div class="flex items-center gap-2.5 titlebar-no-drag">
+      <button id="toggle-left-pane-btn" class="p-1.5 rounded-lg bg-claude-bg hover:bg-claude-card border border-claude-border text-slate-400 hover:text-white transition" title="Toggle Left Sidebar (Ctrl+B)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+      </button>
+
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-claude-accent to-amber-600 flex items-center justify-center shadow-md shadow-orange-950/50">
+        <span class="font-bold text-white text-sm">C</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="font-semibold text-xs tracking-tight text-white">Claude API Explorer</h1>
+          <span class="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-orange-500/15 text-claude-accent border border-orange-500/30">v2.0 Desktop</span>
+        </div>
+      </div>
+
+      <!-- Command Palette Quick Search Button (Ctrl+K) -->
+      <button id="open-cmd-palette-btn" class="ml-2 px-2.5 py-1 rounded-lg bg-claude-bg hover:bg-claude-card border border-claude-border text-xs text-slate-400 hover:text-white flex items-center gap-3 transition">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-claude-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <span>Search params &amp; labs...</span>
+        </span>
+        <kbd class="px-1.5 py-0.5 text-[10px] font-mono bg-claude-panel rounded border border-claude-border text-slate-400">Ctrl+K</kbd>
+      </button>
+    </div>
+
+    <!-- Center/Right Controls: Mode, Model, Theme, API Key & Window Controls -->
+    <div class="flex items-center gap-2 titlebar-no-drag">
+      <!-- Mode Toggle Pill -->
+      <div class="flex items-center bg-claude-bg p-0.5 rounded-lg border border-claude-border text-[11px]">
+        <button id="mode-sim-btn" class="px-2 py-1 rounded-md font-medium transition-all bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          Simulator
+        </button>
+        <button id="mode-live-btn" class="px-2 py-1 rounded-md font-medium transition-all text-slate-400 hover:text-slate-200 flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="live-dot"></span>
+          Live API
+        </button>
+      </div>
+
+      <!-- Model Selector -->
+      <div class="flex items-center gap-1 bg-claude-bg px-2 py-1 rounded-lg border border-claude-border text-[11px]">
+        <span class="text-slate-400">Model:</span>
+        <select id="global-model-select" aria-label="Model" class="bg-transparent text-slate-100 font-mono text-[11px] focus:outline-none cursor-pointer">
+          <option value="claude-sonnet-5-5" class="bg-claude-panel">claude-sonnet-5-5 (Latest)</option>
+          <option value="claude-opus-5-5" class="bg-claude-panel">claude-opus-5-5 (Latest)</option>
+          <option value="claude-haiku-5-5" class="bg-claude-panel">claude-haiku-5-5 (Fastest)</option>
+          <option value="claude-fable-5-1" class="bg-claude-panel">claude-fable-5-1 (Frontier)</option>
+          <option value="claude-opus-4-7" class="bg-claude-panel">claude-opus-4-7 (Post-4.6 Strict)</option>
+          <option value="claude-sonnet-4-6" class="bg-claude-panel">claude-sonnet-4-6</option>
+          <option value="claude-sonnet-4-5" class="bg-claude-panel">claude-sonnet-4-5 (Legacy 4.5)</option>
+        </select>
+      </div>
+
+      <!-- Theme Switcher -->
+      <select id="theme-select" aria-label="Theme" class="bg-claude-bg border border-claude-border rounded-lg px-2 py-1 text-[11px] text-slate-200 focus:outline-none cursor-pointer" title="Switch Color Theme">
+        <option value="midnight">Theme: Midnight Slate</option>
+        <option value="clay">Theme: Warm Clay</option>
+        <option value="daylight">Theme: Daylight Paper</option>
+      </select>
+
+      <!-- Live Spend Meter (session total, optional soft limit) -->
+      <div class="relative titlebar-no-drag">
+        <button id="spend-meter-btn" aria-label="Live spend this session" class="px-2.5 py-1 rounded-lg bg-claude-card hover:bg-slate-800 border border-claude-border text-[11px] font-mono text-slate-300 flex items-center gap-1 whitespace-nowrap transition" aria-haspopup="true" aria-controls="spend-popover">
+          <span class="text-slate-500 font-sans">Spend</span>
+          <span data-spend>$0.0000</span>
+        </button>
+        <div id="spend-popover" class="hidden absolute right-0 top-full mt-1.5 w-64 z-50 p-3 rounded-lg bg-claude-panel border border-claude-border shadow-2xl space-y-2 text-xs">
+          <div class="text-slate-300">Warn me when live spend this session passes:</div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-slate-400">$</span>
+            <input id="spend-limit-input" type="number" min="0" step="0.5" placeholder="no limit" aria-label="Soft spend limit in US dollars" class="flex-1 min-w-0 bg-claude-bg border border-claude-border rounded px-2 py-1 text-white font-mono" />
+            <button id="spend-limit-save-btn" class="px-2 py-1 rounded bg-claude-accent hover:bg-claude-accentHover text-white">Save</button>
+          </div>
+          <div class="flex items-center justify-between pt-1 border-t border-claude-border">
+            <span class="text-[11px] text-slate-500">Estimate from list prices</span>
+            <button id="spend-reset-btn" class="text-[11px] text-sky-400 hover:underline">Reset total</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- API Key Button -->
+      <button id="api-key-modal-btn" class="px-2.5 py-1 rounded-lg bg-claude-card hover:bg-slate-800 border border-claude-border text-[11px] font-medium text-slate-300 flex items-center gap-1.5 transition">
+        <svg class="w-3.5 h-3.5 text-claude-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+        <span id="api-key-status-label">API Key</span>
+      </button>
+
+      <!-- Toggle Right Inspector Button -->
+      <button id="toggle-right-pane-btn" class="p-1.5 rounded-lg bg-claude-bg hover:bg-claude-card border border-claude-border text-slate-400 hover:text-white transition" title="Toggle Right JSON Inspector (Ctrl+J)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+      </button>
+
+      <!-- Native Desktop Window Controls (Minimize, Maximize, Close) -->
+      <div id="desktop-window-controls" class="flex items-center ml-1 pl-2 border-l border-claude-border">
+        <button id="win-min-btn" class="w-8 h-7 flex items-center justify-center rounded hover:bg-slate-800 text-slate-400 hover:text-white transition" title="Minimize">
+          <span>&#8211;</span>
+        </button>
+        <button id="win-max-btn" class="w-8 h-7 flex items-center justify-center rounded hover:bg-slate-800 text-slate-400 hover:text-white transition" title="Maximize / Restore">
+          <span class="text-[11px]">&#9633;</span>
+        </button>
+        <button id="win-close-btn" class="w-8 h-7 flex items-center justify-center rounded hover:bg-rose-600 text-slate-400 hover:text-white transition" title="Close">
+          <span>&times;</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN 3-PANE RESIZABLE WORKBENCH -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- PANE 1: LEFT NAVIGATION & CONCEPT GUIDE -->
+    <aside id="left-sidebar-pane" style="width: 280px;" class="bg-claude-panel border-r border-claude-border flex flex-col shrink-0 overflow-y-auto">
+      <div class="p-2.5 border-b border-claude-border">
+        <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5 px-1 flex items-center justify-between">
+          <span>8 Interactive API Labs</span>
+          <span class="font-mono text-claude-accent">2026 Spec</span>
+        </div>
+        <nav id="module-nav" class="space-y-0.5">
+          <button data-module="messages" class="module-nav-btn active w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium flex items-start gap-2 transition">
+            <span class="px-1.5 py-0.5 rounded bg-orange-500/20 text-claude-accent font-mono text-[10px]">01</span>
+            <div class="truncate">
+              <div class="font-semibold text-slate-100 truncate">Messages &amp; <code class="text-[10px]">output_config</code></div>
+              <div class="text-[10px] text-slate-400 truncate">Stateless turns, effort, JSON schema</div>
+            </div>
+          </button>
+
+          <button data-module="streaming" class="module-nav-btn w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium flex items-start gap-2 transition">
+            <span class="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 font-mono text-[10px]">02</span>
+            <div class="truncate">
+              <div class="font-semibold text-slate-100 truncate">SSE Streaming Visualizer</div>
+              <div class="text-[10px] text-slate-400 truncate">Frame-by-frame deltas &amp; slow-mo</div>
+            </div>
+          </button>
+
+          <button data-module="tools" class="module-nav-btn w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium flex items-start gap-2 transition">
+            <span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-mono text-[10px]">03</span>
+            <div class="truncate">
+              <div class="font-semibold text-slate-100 truncate">Client Tool Use Loop</div>
+              <div class="text-[10px] text-slate-400 truncate">Pause &amp; inspect <code class="text-[10px]">tool_use</code> &rarr; <code class="text-[10px]">tool_result</code></div>
+            </div>
+          </button>
+
+          <button data-module="thinking" class="module-nav-btn w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium flex items-start gap-2 transition">
+            <span class="px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-400 font-mono text-[10px]">04</span>
+            <div class="truncate">
+              <div class="font-semibold text-slate-100 truncate">Adaptive Thinking &amp; Cache</div>
+              <div class="text-[10px] text-slate-400 truncate">5m/1h TTL, <code class="text-[10px]">max_tokens: 0</code> pre-warm</div>
+            </div>
+          </button>
+
+          <button data-module="mcp" class="module-nav-btn w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium flex items-start gap-2 transition">
+            <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-mono text-[10px]">05</span>
+            <div class="truncate">
+              <div class="font-semibold text-slate-100 truncate">MCP Protocol Sandbox</div>
+              <div class="text-[10px] text-slate-400 truncate">Custom MCP servers &amp; Claude bridge</div>
+            </div>
+          </button>
+
+          <button data-module="servertools" class="module-nav-btn w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium flex items-start gap-2 transition">
+            <span class="px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-mono text-[10px]">06</span>
+            <div class="truncate">
+              <div class="font-semibold text-slate-100 truncate">Server Tools &amp; Diagnostics</div>
+              <div class="text-[10px] text-slate-400 truncate"><code class="text-[10px]">srvtoolu_</code> &amp; <code class="text-[10px]">cache_miss_reason</code></div>
+            </div>
+          </button>
+
+          <button data-module="playground" class="module-nav-btn w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium flex items-start gap-2 transition">
+            <span class="px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 font-mono text-[10px]">07</span>
+            <div class="truncate">
+              <div class="font-semibold text-slate-100 truncate">Free-form Playground</div>
+              <div class="text-[10px] text-slate-400 truncate">Raw JSON request editor, templates</div>
+            </div>
+          </button>
+
+          <button data-module="compare" class="module-nav-btn w-full text-left px-2.5 py-2 rounded-lg text-xs font-medium flex items-start gap-2 transition">
+            <span class="px-1.5 py-0.5 rounded bg-fuchsia-500/20 text-fuchsia-300 font-mono text-[10px]">08</span>
+            <div class="truncate">
+              <div class="font-semibold text-slate-100 truncate">Model Comparison</div>
+              <div class="text-[10px] text-slate-400 truncate">Same prompt, 2&ndash;3 models side by side</div>
+            </div>
+          </button>
+        </nav>
+      </div>
+
+      <!-- DYNAMIC CONCEPT EXPLAINER & MENTAL MODEL -->
+      <button id="toggle-concept-guide-btn" aria-expanded="true" aria-controls="concept-guide-container" class="w-full px-3.5 py-2 border-b border-claude-border flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-slate-400 hover:text-slate-200 transition">
+        <span>Concept Guide</span>
+        <span data-chevron aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="p-3.5 flex-1 overflow-y-auto select-text" id="concept-guide-container">
+        <!-- Populated dynamically per module -->
+      </div>
+    </aside>
+
+    <!-- DRAGGABLE SPLITTER 1 -->
+    <div id="left-resizer" class="pane-resizer" title="Drag to resize sidebar"></div>
+
+    <!-- PANE 2: CENTER INTERACTIVE PLAYGROUND -->
+    <main class="flex-1 bg-claude-bg flex flex-col overflow-hidden select-text min-w-[420px]">
+      <div id="module-playground" class="flex-1 overflow-y-auto p-5 space-y-5">
+        <!-- Populated dynamically by active module -->
+      </div>
+    </main>
+
+    <!-- DRAGGABLE SPLITTER 2 -->
+    <div id="right-resizer" class="pane-resizer" title="Drag to resize JSON inspector"></div>
+
+    <!-- PANE 3: RIGHT "UNDER THE HOOD" WIRE INSPECTOR (WITH HOVER PARAMETER TOOLTIPS) -->
+    <aside id="right-inspector-pane" style="width: 480px;" class="bg-claude-panel border-l border-claude-border flex flex-col shrink-0 overflow-hidden select-text">
+      <!-- Inspector Header Tabs -->
+      <div class="h-11 px-3 border-b border-claude-border flex items-center justify-between bg-claude-card/60 shrink-0">
+        <div class="flex items-center gap-1" id="inspector-tabs">
+          <button data-tab="request" class="inspector-tab active px-2.5 py-1.5 rounded text-xs font-medium transition">
+            HTTP Request
+          </button>
+          <button data-tab="response" class="inspector-tab px-2.5 py-1.5 rounded text-xs font-medium transition">
+            Raw Response
+          </button>
+          <button data-tab="tokens" class="inspector-tab px-2.5 py-1.5 rounded text-xs font-medium transition">
+            Tokens &amp; Cost
+          </button>
+          <button data-tab="code" class="inspector-tab px-2.5 py-1.5 rounded text-xs font-medium transition">
+            SDK Code
+          </button>
+        </div>
+        <span id="inspector-latency-badge" class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">Ready</span>
+      </div>
+
+      <!-- Tooltip Hint Banner -->
+      <div class="px-3.5 py-1.5 bg-sky-500/10 border-b border-claude-border flex items-center justify-between text-[11px] text-sky-300 shrink-0">
+        <span>&#128161; <strong>Interactive JSON:</strong> Hover any <span class="border-b border-dotted border-sky-400 font-mono">parameter</span> for official API docs, or click <span class="font-mono">&#9662;</span> to fold!</span>
+      </div>
+
+      <!-- Inspector Body Content -->
+      <div class="flex-1 overflow-y-auto p-3.5 font-mono text-xs" id="inspector-content">
+        <!-- Populated dynamically by inspector state -->
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- COMMAND PALETTE MODAL (Ctrl+K) -->
+  <div id="cmd-palette-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-start justify-center pt-20 z-50">
+    <div class="bg-claude-panel border border-claude-border rounded-xl w-full max-w-xl shadow-2xl overflow-hidden select-text">
+      <div class="p-3 border-b border-claude-border flex items-center gap-2.5">
+        <svg class="w-4 h-4 text-claude-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input id="cmd-palette-input" aria-label="Search labs, parameters and shortcuts" type="text" placeholder="Search API parameters (e.g. output_config, cache_control, temperature) or jump to a lab..." class="w-full bg-transparent text-xs text-white focus:outline-none" />
+        <button id="close-cmd-palette-btn" class="text-xs text-slate-400 hover:text-white font-mono px-1.5 py-0.5 rounded border border-claude-border">ESC</button>
+      </div>
+      <div id="cmd-palette-results" class="max-h-80 overflow-y-auto p-2 space-y-1">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- API KEY MODAL -->
+  <div id="api-key-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="bg-claude-panel border border-claude-border rounded-xl w-full max-w-md p-5 shadow-2xl select-text">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold text-base text-white">Configure Anthropic API Key</h3>
+        <button id="close-key-modal-btn" class="text-slate-400 hover:text-white text-sm">&times;</button>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed mb-4">
+        Every lab works out-of-the-box in <strong>Simulator Mode</strong> with zero API cost. If you have an Anthropic API key (<code class="text-claude-accent">sk-ant-...</code>), enter it below to send live requests to <code class="text-sky-400">https://api.anthropic.com/v1/messages</code>.
+      </p>
+      <label class="block text-xs font-medium text-slate-400 mb-1.5">Anthropic API Key (saved persistently on your desktop)</label>
+      <input id="custom-api-key-input" aria-label="Anthropic API key" type="password" placeholder="sk-ant-api03-..." class="w-full bg-claude-bg border border-claude-border rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-claude-accent mb-4" />
+      <div class="flex items-center justify-end gap-2">
+        <button id="clear-key-btn" class="px-3 py-1.5 rounded-lg border border-claude-border text-xs text-slate-300 hover:bg-slate-800">Clear Key</button>
+        <button id="save-key-btn" class="px-4 py-1.5 rounded-lg bg-claude-accent hover:bg-claude-accentHover text-xs font-semibold text-white">Save &amp; Enable Live Mode</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>
