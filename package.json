@@ -2,8 +2,29 @@
   "name": "claude-api-lab",
   "productName": "Claude API Explorer",
   "version": "2.0.0",
-  "description": "Interactive desktop learning workbench for the Anthropic Claude API (Messages, SSE Streaming, Tool Use, Adaptive Thinking, Prompt Caching, and MCP)",
+  "description": "Interactive desktop learning workbench & wire inspector for the Anthropic Claude API (Messages, SSE Streaming, Tool Use, Adaptive Thinking, Prompt Caching, and Custom MCP Servers)",
   "license": "Apache-2.0",
+  "homepage": "https://github.com/Ludi117/claude-api-lab",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ludi117/claude-api-lab.git"
+  },
+  "keywords": [
+    "anthropic",
+    "claude",
+    "claude-api",
+    "mcp",
+    "model-context-protocol",
+    "mcp-inspector",
+    "mcp-client",
+    "api-explorer",
+    "sse-streaming",
+    "prompt-caching",
+    "extended-thinking",
+    "electron",
+    "developer-tools",
+    "llm"
+  ],
   "main": "main.js",
   "scripts": {
     "start": "npm run build:css && electron .",

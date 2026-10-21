@@ -4,6 +4,10 @@ An interactive **Electron desktop workbench & wire inspector** for learning, tes
 
 Every lab runs out-of-the-box in **Simulator Mode** (zero API cost, instant deterministic responses, realistic SSE streams, and 2026 spec validation) and switches seamlessly to **Live API Mode** when you add your Anthropic API key (`sk-ant-...`).
 
+![Claude API Lab – Interactive JSON Wire Inspector & Parameter Tooltips](docs/screenshots/workbench-overview.png)
+
+![Claude API Lab – Custom MCP Server Inspector & JSON-RPC 2.0 Sandbox](docs/screenshots/mcp-inspector.png)
+
 ---
 
 ## ✨ Key Features
