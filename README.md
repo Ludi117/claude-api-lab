@@ -41,11 +41,23 @@ Every lab runs out-of-the-box in **Simulator Mode** (zero API cost, instant dete
 
 ## 🚀 Getting Started
 
-### Prerequisites
+### Option 1: Download Standalone Windows Desktop App (No Node.js Required)
+
+You can download the pre-packaged Windows x64 application directly from **[GitHub Releases](https://github.com/Ludi117/claude-api-lab/releases/latest)**:
+
+1. Download **`Claude-API-Lab-win32-x64.zip`** from the [Latest Release (`v2.0.0`)](https://github.com/Ludi117/claude-api-lab/releases/latest).
+2. Extract the `.zip` archive to any folder on your PC.
+3. Double-click **`Claude API Explorer.exe`** to launch the desktop workbench immediately (no terminal or server startup needed).
+
+---
+
+### Option 2: Run from Source (Development)
+
+#### Prerequisites
 - [Node.js](https://nodejs.org/) (v18+ or v20+ recommended)
 - Optional: An [Anthropic API Key](https://console.anthropic.com/) if you want to run requests in **Live API Mode** (not required for **Simulator Mode**).
 
-### Installation
+#### Installation
 
 ```bash
 git clone https://github.com/Ludi117/claude-api-lab.git
@@ -53,20 +65,20 @@ cd claude-api-lab
 npm install
 ```
 
-### Run as a Desktop Application (Electron)
+#### Run as a Desktop Application (Electron)
 
 ```bash
 npm start
 ```
 
-### Run in a Web Browser (Local Server Only)
+#### Run in a Web Browser (Local Server Only)
 
 ```bash
 npm run web
 ```
 Then open `http://localhost:3000` in your browser.
 
-### Build Standalone Windows Desktop `.exe`
+#### Build Standalone Windows Desktop `.exe` Locally
 
 ```bash
 npm run package:win
