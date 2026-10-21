@@ -601,10 +601,13 @@ function bindResizablePanes() {
 
   window.addEventListener("mousemove", (e) => {
     if (isDraggingLeft && leftPane) {
-      const newWidth = Math.max(220, Math.min(520, e.clientX));
+      const maxLeft = Math.max(520, Math.floor(window.innerWidth * 0.5));
+      const newWidth = Math.max(200, Math.min(maxLeft, e.clientX));
       leftPane.style.width = `${newWidth}px`;
     } else if (isDraggingRight && rightPane) {
-      const newWidth = Math.max(280, Math.min(720, window.innerWidth - e.clientX));
+      const leftWidth = leftPane && !leftPane.classList.contains("hidden") ? leftPane.offsetWidth : 0;
+      const maxRight = Math.max(720, window.innerWidth - leftWidth - 220);
+      const newWidth = Math.max(260, Math.min(maxRight, window.innerWidth - e.clientX));
       rightPane.style.width = `${newWidth}px`;
     }
   });
